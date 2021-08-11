@@ -9,6 +9,7 @@ def ouvir_microfone():
     #Habilita o microfone do usuário
     microfone = sr.Recognizer()
     
+
     #usando o microfone
     with sr.Microphone() as source:
         
@@ -20,26 +21,20 @@ def ouvir_microfone():
         
         #Armazena o que foi dito numa variavel
         audio = microfone.listen(source)
-        
     try:
         
         #Passa a variável para o algoritmo reconhecedor de padroes
         frase = microfone.recognize_google(audio,language='pt-BR')
 
-        if frase == 'Acender LED':
-            arduino.write(b'acender led')
-            print("LED turned ON")
-        elif frase == 'Apagar LED':
-            arduino.write(b'apagar led')
-            print("LED turned OFF")
-        
         #Retorna a frase pronunciada
         print("Você disse: " + frase)
+        arduino.write(frase.encode('utf-8'))
         
     #Se nao reconheceu o padrao de fala, exibe a mensagem
     except sr.UnkownValueError:
         print("Não entendi")
-        
+        arduino.write(b'erro')
     return frase
 
-ouvir_microfone()
+while True:
+    ouvir_microfone()
